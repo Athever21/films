@@ -1,0 +1,6 @@
+{
+  "verbose": false,
+  "watch": ["./src/**/*"],
+  "exec": "ts-node -r tsconfig-paths/register ./src/index.ts && node ./dist/index.js",
+  "ext": "js, ts"
+}

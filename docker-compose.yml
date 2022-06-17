@@ -1,0 +1,31 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports: 
+      - 5432:5432
+  app:
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    build: 
+      context: .
+      dockerfile: "./Dockerfile"
+    ports:
+      - 3001:3001
+    volumes:
+      - ".:/app:delegated"
+      - /app/node_modules
+    environment:
+      HOST: 0.0.0.0
+      CHOKIDAR_USEPOLLING: true
+    working_dir: /app
+    command: bash -c "yarn & yarn dev"
+volumes:
+  postgres:
