@@ -11,30 +11,9 @@ datasource db {
 }
 
 model Favorite {
-  uuid   String      @id @default(uuid()) @db.VarChar(36)
+  uuid   String @id @default(uuid()) @db.VarChar(36)
   name   String
-  movies MovieInfo[] @relation(name: "FavoriteMovie")
+  movies Int[]
 
   @@map(name: "favorite")
-}
-
-model MovieInfo {
-  uuid       String      @id @default(uuid()) @db.VarChar(36)
-  relaseDate DateTime
-  title      String
-  characters Character[] @relation(name: "MovieCharacter")
-  lists      Favorite[]  @relation(name: "FavoriteMovie")
-
-  @@map(name: "movies")
-}
-
-model Character {
-  uuid    String @id @default(uuid()) @db.VarChar(36)
-  name    String @unique
-  content Json
-
-  MovieInfo     MovieInfo? @relation("MovieCharacter", fields: [movieInfoUuid], references: [uuid])
-  movieInfoUuid String?    @db.VarChar(36)
-  
-  @@map(name: "characters")
 }

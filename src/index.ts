@@ -1,17 +1,13 @@
 import express from 'express';
-import { PrismaClient } from "@prisma/client"
+import errorMiddleware from '@/errors/errorMiddleware';
+import setupRoutes from './setupRoutes';
+
 const app = express();
 
+app.use(express.json());
+setupRoutes(app);
+app.use(errorMiddleware);
 
-const prisma = new PrismaClient();
-
-console.log(prisma.movieInfo.findMany())
-//@ts-ignore
-app.get('/', (req,res) => {
-  //@ts-ignore
-  res.json({a: "d"});
-})
-console.log("g");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => console.log(`Server listening at ${PORT}`));

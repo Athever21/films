@@ -1,5 +1,13 @@
 version: "3"
 services:
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - cache:/data
   postgres:
     image: postgres:13
     restart: always
@@ -13,6 +21,7 @@ services:
   app:
     depends_on:
       - postgres
+      - cache
     restart: unless-stopped
     build: 
       context: .
@@ -24,8 +33,14 @@ services:
       - /app/node_modules
     environment:
       HOST: 0.0.0.0
-      CHOKIDAR_USEPOLLING: true
+      CHOKIDAR_USEPOLLING: "true"
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+      DATABASE_URI: postgresql://root:root@postgres:5432/films
     working_dir: /app
     command: bash -c "yarn & yarn dev"
 volumes:
   postgres:
+  cache:
+    driver: local
